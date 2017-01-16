@@ -1,0 +1,16 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.kkk</groupId>
+  <artifactId>UserCenter</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>UserCenter</name>
+  <description>UserCenter</description>
+  <modules>
+  	<module>UserCenter_common</module>
+  	<module>UserCenter_service</module>
+  	<module>UserCenter_service_api</module>
+  	<module>UserCenter_back</module>
+  	<module>UserCenter_head</module>
+  </modules>
+</project>
