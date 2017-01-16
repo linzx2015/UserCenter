@@ -6,11 +6,64 @@
   <packaging>pom</packaging>
   <name>UserCenter</name>
   <description>UserCenter</description>
+  
   <modules>
   	<module>UserCenter_common</module>
   	<module>UserCenter_service</module>
-  	<module>UserCenter_service_api</module>
   	<module>UserCenter_back</module>
   	<module>UserCenter_head</module>
   </modules>
+  
+  <!-- 设置编译环境 -->
+  <build>
+  	<!-- 设置插件 -->
+  	<plugins>
+  		<!-- 跳过单元测试 -->
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-surefire-plugin</artifactId>
+  			<!-- 跳过test -->
+  			<configuration>
+  				<skip>true</skip>
+  			</configuration>
+  		</plugin>
+  		<!-- 设置JDK版本 -->
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-compiler-plugin</artifactId>
+  			<configuration>
+  				<source>1.8</source>
+  				<target>1.8</target>
+  				<encoding>UTF-8</encoding>
+  			</configuration>
+  		</plugin>
+  		<!-- 打包源代码 -->
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-source-plugin</artifactId>
+  			<configuration>
+  				<attach>true</attach>
+  			</configuration>
+  			<executions>
+  				<execution>
+  					<phase>compile</phase>
+  					<goals>
+  						<goal>jar</goal>
+  					</goals>
+  				</execution>
+  			</executions>
+  		</plugin>
+  		<!-- 设置资源文件编码 -->
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-resources-plugin</artifactId>
+  			<configuration>
+  				<encoding>UTF-8</encoding>
+  			</configuration>
+  		</plugin>
+  	</plugins>
+  	<!-- clean可以,但build会出错,暂时不管,先注释 -->
+  <!-- 	<defaultGoal>compile</defaultGoal>  -->
+  </build>
+  
 </project>
