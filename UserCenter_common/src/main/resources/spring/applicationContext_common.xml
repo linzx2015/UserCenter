@@ -11,13 +11,14 @@
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop.xsd"
         default-autowire="byName">
-
+	<!-- 包扫描,要记得 -->
+	<context:component-scan base-package="com.kkk"/>
 	<!-- 配置数据源,后续要交给sqlSessionFactory管理 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
     	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
     	<property name="url" value="jdbc:mysql://localhost:3306/usercenter"/>
     	<property name="username" value="root"/>
-    	<property name="password" value="123456"/>
+    	<property name="password" value="root"/>
     </bean>  
 
     <!-- 配置sqlSessionFactory交由sqlSessionFactoryBean进行管理 -->
@@ -25,11 +26,32 @@
     	<!-- 配置mybatis配置文件 -->
     	<property name="configLocation" value="classpath:mybatis.cfg.xml"/>
     	<!-- 配置mapper资源文件,可使用通配符 -->
-    	<property name="mapperLocations" value="classpath:com/kkk/usercenter/*/pojo/*Mapper.xml"/>
+    	<property name="mapperLocations" value="classpath:/config/sqlmapper/*/*Mapper.xml"/>
     </bean>
   
     <!-- 配置 Dao扫描--> 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.kkk"/>
 	</bean>
+	
+	<!-- 配置事物管理id,自动装配dataSource,因DataSourceTransactionManager属性需要;
+		 id必须为transactionManager,因为tx:advice的事物管理名称要一样
+	 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"/>
+	
+	<!-- 配置transactionManager事务管理的方法 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="update*" propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="delete*" propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="*" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 配置对哪些类切入事物管理 -->
+	<aop:config>
+		<aop:pointcut id="pointcut" expression="execution (* com.kkk.usercenter.*.service.*.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut"/>
+	</aop:config>
+	
 </beans>

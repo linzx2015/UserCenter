@@ -1,5 +1,8 @@
 package com.kkk.usercenter.common.test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +14,12 @@ import com.kkk.usercenter.common.util.ConstantFinalUtil;
 public class BaseTest
 {
 	protected ApplicationContext ac;
+	private Map<String,Object> paramMap=new HashMap<String,Object>();
+	protected Map<String,Object> getParamMap()
+	{
+		this.paramMap.clear();
+		return this.paramMap;
+	}
 	@Before
 	public void init()
 	{
