@@ -47,7 +47,7 @@ public interface IUserService
 
 	/**
 	 * 查询多个管理员服务
-	 * 
+	 * @param PageInfoUtil 为null不分页,否则进行分页
 	 * @param Map
 	 * @return List<AAdmins>
 	 */

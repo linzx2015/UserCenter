@@ -1,7 +1,10 @@
 package com.kkk.usercenter.users.pojo;
 
 import java.util.Date;
-
+/**
+ * 管理员的pojo
+ * @author kkk
+ * */
 public class AAdmins
 {	
 	//管理员id
@@ -31,6 +34,17 @@ public class AAdmins
 	//上次登录时间
 	private Date lastLoginTime;
 	
+	//多对一,持有一个角色
+	private ARole role;
+	
+	public ARole getRole()
+	{
+		return role;
+	}
+	public void setRole(ARole role)
+	{
+		this.role = role;
+	}
 	public int getId()
 	{
 		return id;

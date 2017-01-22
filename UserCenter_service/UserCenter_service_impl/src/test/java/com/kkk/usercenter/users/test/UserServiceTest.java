@@ -1,6 +1,8 @@
 package com.kkk.usercenter.users.test;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -12,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kkk.usercenter.common.test.BaseTest;
 import com.kkk.usercenter.common.util.ConstantFinalUtil;
+import com.kkk.usercenter.common.util.PageInfoUtil;
 import com.kkk.usercenter.users.pojo.AAdmins;
 import com.kkk.usercenter.users.service.IUserService;
 
@@ -66,5 +69,24 @@ public class UserServiceTest extends BaseTest
 		AAdmins admin=this.userService.queryOneAdminsService(paramMap);
 		JSONObject resultJson=this.userService.deleteOneAdminService(admin);
 		ConstantFinalUtil.loggerMsg.info("--删除一条记录-{}-",resultJson);
+	}
+	@Test
+	public void queryMultiAdminServiceTest()
+	{
+		Map<String,Object> paramMap=this.getParamMap();
+		paramMap.put("keywords","1");
+		paramMap.put("status","1");
+//		paramMap.put("stDate",new Date());
+//		paramMap.put("edDate",new Date());
+		PageInfoUtil pageInfoUtil=new PageInfoUtil();
+		List<AAdmins> adminList=this.userService.queryMultiAdminsService(pageInfoUtil, paramMap);
+		int count=1;
+		for (Iterator iterator = adminList.iterator(); iterator.hasNext();)
+		{
+			AAdmins aAdmins = (AAdmins) iterator.next();
+			ConstantFinalUtil.loggerMsg.info("-管理员id{}-email {}-",aAdmins.getId(),aAdmins.getEmail());
+			count++;
+		}
+		ConstantFinalUtil.loggerMsg.info("分页的信息 {}--{}",pageInfoUtil.getTotalRecord(),pageInfoUtil.getPageSize());
 	}
 }

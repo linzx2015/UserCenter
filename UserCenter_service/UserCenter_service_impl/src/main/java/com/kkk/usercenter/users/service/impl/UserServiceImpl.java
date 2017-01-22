@@ -111,8 +111,6 @@ public class UserServiceImpl implements IUserService
 		{
 			//先查询全部记录
 			paramMap.put("pageCond", "true");
-			paramMap.put("currentRecord", "0");
-			paramMap.put("pageSize", pageInfoUtil.getPageSize());
 			List<AAdmins> adminList=this.adminDao.queryMulti(paramMap);
 			//查出总记录数
 			if(adminList.size()==1)
@@ -124,10 +122,8 @@ public class UserServiceImpl implements IUserService
 			paramMap.put("currentRecord", pageInfoUtil.getCurrentRecord());
 			paramMap.put("pageSize", pageInfoUtil.getPageSize());
 			return this.adminDao.queryMulti(paramMap);
-		}else
-		{
-			return this.adminDao.queryMulti(paramMap);
 		}
+			return this.adminDao.queryMulti(paramMap);
 	}
 	/*  管理员服务实现结束   */
 }

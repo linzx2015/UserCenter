@@ -25,13 +25,25 @@
 		</where>
 	</delete>
 	<!-- 暂时没有关联其他表,没写自定义map -->
-	<select id="queryOne" parameterType="map" resultType="com.kkk.usercenter.users.pojo.AAdmins">
+	<select id="queryOne" parameterType="map" resultMap="adminMap">
 		select * from a_admins
 		<where>
 			<if test="id!=null and id!=''">
 			 	and id=#{id}
 			</if>
 		</where>
+	</select>
+	
+	<!-- 自定义结果类型 -->
+	<resultMap type="com.kkk.usercenter.users.pojo.AAdmins" id="adminMap">
+		<id column="id" property="id"/>
+		<result column="roleId" property="roleId"/>
+		
+		<association property="role" column="roleId" javaType="com.kkk.usercenter.users.pojo.ARole" select="queryOneRole"/>
+	</resultMap>
+	
+	<select id="queryOneRole" resultType="com.kkk.usercenter.users.pojo.ARole">
+		select * from a_role where id=#{roleId}
 	</select>
 	
 	<!-- 分页查询,通过分页条件进行区别是否进行分页查询 -->
@@ -46,23 +58,23 @@
 	pageCoud = 不传的时候,不分页,查询所有记录
 	-->
 	<!-- 查询多条记录,分页 -->
-	<select id="queryMulti" parameterType="map" resultType="com.kkk.usercenter.users.pojo.AAdmins">
+	<select id="queryMulti" parameterType="map" resultMap="adminMap">
 		<choose>
 			<when test="pageCond=='true'">
 				select count(*) as id from a_admins 
 			</when>
 			<otherwise>
-				select * from a_amdins
+				select * from a_admins
 			</otherwise>
 		</choose>
 		<where>
 			<if test="keywords!=null and keywords!=''">
-				and (email like #{keywords} or trueName like #{keywords} or qq like #{keywords})
+				and (email like #{keywords} or trueName like #{keywords} or qq like #{keywords} or phone like #{keywords})
 			</if>
 			<if test="status!=null">
 				and status=#{status}
 			</if>
-			<if test="stDate!=null and edDate">
+			<if test="stDate!=null and edDate!=null">
 				<![CDATA[
 					and updateTime>=#{stDate} and updateTime<#{edDate}
 				]]> 
@@ -90,7 +102,7 @@
 			<when test="pageCond=='true'">
 			</when>
 			<when test="pageCond=='false'">
-				and limit #{currentRecord},#{pageSize}
+				limit #{currentRecord},#{pageSize}
 			</when>
 		</choose>
 	</select>
