@@ -35,6 +35,7 @@ public class BaseTest
 	public void close()
 	{
 		ClassPathXmlApplicationContext cpxac=(ClassPathXmlApplicationContext) this.ac;
+		cpxac.close();		
 		ConstantFinalUtil.loggerMsg.info("--close--");
 	}
 }

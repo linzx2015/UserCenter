@@ -17,6 +17,10 @@
 			<td>管理员列表</td>
 			<td><a href="${rootPath}/adminList.html" target="_blank">管理员列表</a></td>
 		</tr>
+		<tr>
+			<td>管理员登录</td>
+			<td><a href="${rootPath}/login.html" target="_blank">管理员登录</a></td>
+		</tr>
 	</table>	
 </body>
 </html>

@@ -1,6 +1,9 @@
 package com.kkk.usercenter.users.pojo;
 
 import java.util.Date;
+
+import com.alibaba.fastjson.JSONObject;
+import com.kkk.usercenter.common.util.DateFormatUtil;
 /**
  * 管理员的pojo
  * @author kkk
@@ -34,6 +37,7 @@ public class AAdmins
 	//上次登录时间
 	private Date lastLoginTime;
 	
+	private String statusStr;
 	//多对一,持有一个角色
 	private ARole role;
 	
@@ -149,4 +153,41 @@ public class AAdmins
 	{
 		this.lastLoginTime = lastLoginTime;
 	}
+	
+	//用于前台展示的状态标识
+	public String getStatusStr()
+	{
+		/*
+		 * 状态:0 禁用,1 启用
+		 * */
+		AAdminsEnum[] adminsEnums=AAdminsEnum.values();
+		for(int i=0;i<adminsEnums.length;i++)
+		{
+			AAdminsEnum adminsEnum=adminsEnums[i];
+			if(adminsEnum.toString().startsWith("STATUS_"))
+			{
+				//循环枚举的数值进行比较,数据库的值等于当前值,则进行赋值
+				if(this.status==adminsEnum.getStatus())
+				{
+					this.statusStr=adminsEnum.getInfo();
+					break;
+				}
+			}
+		}
+		return statusStr;
+	}
+	
+	public JSONObject toJSON()
+	{
+		DateFormatUtil dateFormatUtil=new DateFormatUtil();
+		JSONObject resultJSON=new JSONObject();
+		//开放的字段
+		resultJSON.put("id", this.getId());
+		resultJSON.put("email", this.getEmail());
+		resultJSON.put("createTime", dateFormatUtil.format(this.getCreateTime()));
+		resultJSON.put("updateTime", dateFormatUtil.format(this.getUpdateTime()));
+		resultJSON.put("lastLoginTime", dateFormatUtil.format(this.getLastLoginTime()));
+		return resultJSON;
+	}
+	
 }

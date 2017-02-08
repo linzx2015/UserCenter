@@ -31,6 +31,10 @@
 			<if test="id!=null and id!=''">
 			 	and id=#{id}
 			</if>
+			<!-- 根据邮箱查询 -->
+			<if test="email!=null and email!=''">
+				and email=#{email}
+			</if>
 		</where>
 	</select>
 	

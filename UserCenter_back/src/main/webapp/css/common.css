@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+/* 错误信息的样式 */
+.err_info {
+	color: red;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 15px 35px 0 0;
+	text-align: center;
+}

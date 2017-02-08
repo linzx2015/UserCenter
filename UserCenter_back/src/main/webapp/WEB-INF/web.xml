@@ -20,20 +20,23 @@
   </filter-mapping>
   <!-- 字符编码配置结束 -->
   
-  <!-- 配置springmvc的servlet,strust2是filter -->
-  <servlet>
-  	<servlet-name>DispatcherServlet</servlet-name>
-  	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-  	<init-param>
-  		<param-name>contextConfigLocation</param-name>
-  		<param-value>classpath:spring/applicationContext_*.xml</param-value>
-  	</init-param>
-	<load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-  	<servlet-name>DispatcherServlet</servlet-name>
-  	<url-pattern>*.html</url-pattern>
-  </servlet-mapping>
+  <!-- 配置springmvc的servlet,strust2是filter,classpath*扫描多个包下面的文件 -->
+ 	<servlet>
+		<servlet-name>DispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<!-- Spring配置文件 -->
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:spring/applicationContext_*.xml</param-value>	
+		</init-param>
+		<!-- tomcat一启动就初始化 -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>DispatcherServlet</servlet-name>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
   <!-- springmvc配置结束 -->
   
   <welcome-file-list>

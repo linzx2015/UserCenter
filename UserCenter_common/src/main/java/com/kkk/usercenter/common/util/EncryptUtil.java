@@ -49,7 +49,7 @@ public class EncryptUtil
 	}
 	public static void main(String args[])
 	{
-		String sourcePass="test";
+		String sourcePass="123";
 		String encodePass=DigestUtils.sha256Hex(sourcePass);
 		ConstantFinalUtil.loggerMsg.info("sha256:"+encodePass);
 		
