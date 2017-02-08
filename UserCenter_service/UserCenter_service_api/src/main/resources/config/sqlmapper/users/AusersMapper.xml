@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kkk.usercenter.users.dao.IAUsersDao">
+	<insert id="insertOne" parameterType="com.kkk.usercenter.users.pojo.AUsers" useGeneratedKeys="true" keyProperty="id">
+		insert into 
+		a_users(email,password,phone,qq,address,loginFailedCount,loginFailedTime,photoPath,emailStatus,
+			phoneStatus,status,createTime,updateTime,lastLoginTime)
+		values(#{email},#{password},#{phone},#{qq},#{address},#{loginFailedCount},#{loginFailedTime},
+			#{photoPath},#{emailStatus},#{phoneStatus},#{status},#{createTime},#{updateTime},#{lastLoginTime});
+	</insert>
+	
+	<update id="updateOne" parameterType="com.kkk.usercenter.users.pojo.AUsers">
+		update a_users
+		<set>
+		  email=#{email},password=#{password},phone=#{phone},qq=#{qq},address=#{address},loginFailedCount=#{loginFailedCount},
+		  photoPath=#{photoPath},emailStatus=#{emailStatus},phoneStatus=#{phoneStatus},status=#{status},createTime=#{createTime},updateTime=#{updateTime},lastLoginTime=#{lastLoginTime}
+		</set>
+		<where>
+			<choose>
+				<otherwise>
+					id=#{id}
+				</otherwise>
+			</choose>
+		</where> 
+	</update>
+	<delete id="deleteOne" parameterType="com.kkk.usercenter.users.pojo.AUsers">
+		delete from a_users
+		<where>
+			<choose>
+				<otherwise>
+				<!-- 建议任何时候带上条件,choose,默认按照id删除,防止菜鸟不加条件,直接把所有记录删除 -->
+					id = #{id}
+				</otherwise>
+			</choose>
+		</where>
+	</delete>
+	<resultMap type="com.kkk.usercenter.users.pojo.AUsers" id="userExtendMap">
+		<id column="id" property="id"/>
+		<association property="usersExtend" column="id" javaType="com.kkk.usercenter.users.pojo.AUsersExtend" select="queryOneUserExtend"/>
+	</resultMap>
+	
+	<select id="queryOneUserExtend" resultType="com.kkk.usercenter.users.pojo.AUsersExtend">
+		select * from a_users_extend where usersId=#{id}
+	</select>
+	
+	<select id="queryOne" parameterType="map" resultMap="userExtendMap">
+		select * from a_users
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="email!=null and email!=''">
+			 	and email=#{email}
+			</if>
+		</where>
+	</select>
+	<select id="queryMulti" parameterType="map" resultMap="userExtendMap">
+		<choose>
+			<when test="pageCond=='true'">
+				select count(*) as id
+			</when>
+			<otherwise>
+				select * 
+			</otherwise>
+		</choose>
+		from a_users
+		<where>
+			<if test="keywords!=null and keywords!=''">
+				and (email like #{keywords} or phone like #{keywords} or qq like #{keywords})
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="stDate!=null and edDate!=nulll">
+				<![CDATA[
+				and updateTime>=#{stDate} and updateTime<#{edDate}	
+				]]>
+			</if>
+		</where>
+		<choose>
+			<when test="pageCond=='true'">
+			</when>
+			<otherwise>
+				<choose>
+					<when test="orderby == 'createTimeDesc">
+						order by createTime desc
+					</when>
+					<otherwise>
+						order by lastLoginTime desc
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		<if test="pageCond=='false'">
+			limit #{currentRecord},#{pageSize}
+		</if>
+	</select>
+</mapper>
+  
+  
+  
+  
+

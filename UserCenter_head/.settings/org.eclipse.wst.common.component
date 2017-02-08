@@ -10,6 +10,9 @@
         <dependent-module archiveName="UserCenter_common-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/UserCenter_common/UserCenter_common">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="UserCenter_service_impl-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/UserCenter_service_impl/UserCenter_service_impl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="UserCenter_head"/>
         <property name="java-output-path" value="/UserCenter_head/target/classes"/>
     </wb-module>

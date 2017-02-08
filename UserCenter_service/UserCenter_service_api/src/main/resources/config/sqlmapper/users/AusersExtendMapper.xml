@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kkk.usercenter.users.dao.IAUsersExtendDao">
+	<insert id="insertOne" parameterType="com.kkk.usercenter.users.pojo.AUsersExtend" useGeneratedKeys="true" keyProperty="id">
+		insert into 
+		a_users_extend(usersId,idCardType,idCardNum,idCardHead,idCardBack,idCardHand,emailSendTime,emailSendCode,phoneSendTime,
+			phoneSendCode,createTime,updateTime,lastLoginTime)
+		values(#{usersId},#{idCardType},#{idCardNum},#{idCardHead},#{idCardBack},#{idCardHand},#{emailSendTime},
+			#{emailSendCode},#{phoneSendTime},#{phoneSendCode},#{createTime},#{updateTime},#{lastLoginTime});
+	</insert>
+	
+	<update id="updateOne" parameterType="com.kkk.usercenter.users.pojo.AUsersExtend">
+		update a_users_extend
+		<set>
+		  usersId=#{usersId},idCardType=#{idCardType},idCardNum=#{idCardNum},idCardHead=#{idCardHead},idCardBack=#{idCardBack},idCardHand=#{idCardHand},
+		  emailSendTime=#{emailSendTime},emailSendCode=#{emailSendCode},phoneSendTime=#{phoneSendTime},phoneSendCode=#{phoneSendCode},createTime=#{createTime},updateTime=#{updateTime},lastLoginTime=#{lastLoginTime}
+		</set>
+		<where>
+			<choose>
+				<otherwise>
+					id=#{id}
+				</otherwise>
+			</choose>
+		</where> 
+	</update>
+	<delete id="deleteOne" parameterType="com.kkk.usercenter.users.pojo.AUsersExtend">
+		delete from a_users_extend
+		<where>
+			<choose>
+				<otherwise>
+					<!-- 建议任何时候带上条件,choose,默认按照id删除,防止菜鸟不加条件,直接把所有记录删除 -->
+					id = #{id}
+				</otherwise>
+			</choose>
+		</where>
+	</delete>
+	<select id="queryOne" parameterType="map" resultType="com.kkk.usercenter.users.pojo.AUsersExtend">
+		select * from a_users_extend
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+		</where>
+	</select>
+	<select id="queryMulti" parameterType="map" resultType="com.kkk.usercenter.users.pojo.AUsersExtend">
+		<choose>
+			<when test="pageCond=='true'">
+				select count(*) as id
+			</when>
+			<otherwise>
+				select * 
+			</otherwise>
+		</choose>
+		from a_users_extend
+		<where>
+		</where>
+		<choose>
+			<when test="pageCond=='true'">
+			</when>
+			<otherwise>
+				<choose>
+					<when test="orderby == 'createTimeDesc">
+						order by createTime desc
+					</when>
+					<otherwise>
+						order by lastLoginTime desc
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		<if test="pageCond=='false'">
+			limit #{currentRecord},#{pageSize}
+		</if>
+	</select>
+</mapper>
+  
+  
+  
+  
+

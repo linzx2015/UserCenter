@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kkk.usercenter.users.dao.IARoleDao">
+	<insert id="insertOne" parameterType="com.kkk.usercenter.users.pojo.ARole" useGeneratedKeys="true" keyProperty="id">
+		insert into 
+		a_role(name,content,status,createTime,updateTime,pubTime)
+		values(#{name},#{content},#{status},#{createTime},#{updateTime},#{pubTime});
+	</insert>
+	<update id="updateOne" parameterType="com.kkk.usercenter.users.pojo.ARole">
+		update a_role
+		<set>
+		  name=#{name},content=#{content},status=#{status},createTime=#{createTime},updateTime=#{updateTime},pubTime=#{pubTime},
+		</set>
+		<where>
+			<choose>
+				<otherwise>
+					id=#{id}
+				</otherwise>
+			</choose>
+		</where> 
+	</update>
+	<delete id="deleteOne" parameterType="com.kkk.usercenter.users.pojo.ARole">
+		delete from a_role
+		<where>
+			<choose>
+				<otherwise>
+					<!-- 建议任何时候带上条件,choose,默认按照id删除,防止菜鸟不加条件,直接把所有记录删除 -->
+					id = #{id}
+				</otherwise>
+			</choose>
+		</where>
+	</delete>
+	<select id="queryOne" parameterType="map" resultType="com.kkk.usercenter.users.pojo.ARole">
+		select * from a_role
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+		</where>
+	</select>
+	<select id="queryMulti" parameterType="map" resultType="com.kkk.usercenter.users.pojo.ARole">
+		<choose>
+			<when test="pageCond=='true'">
+				select count(*) as id
+			</when>
+			<otherwise>
+				select * 
+			</otherwise>
+		</choose>
+		from a_role
+		<where>
+			<if test="keywords!=null and keywords!=''">
+				and (name like #{keywords} or content like #{keywords})
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="stDate!=null and edDate!=nulll">
+				<![CDATA[
+				and updateTime>=#{stDate} and updateTime<#{edDate}	
+				]]>
+			</if>
+		</where>
+		<choose>
+			<when test="pageCond=='true'">
+			</when>
+			<otherwise>
+				<choose>
+					<when test="orderby == 'createTimeDesc">
+						order by createTime desc
+					</when>
+					<otherwise>
+						order by lastLoginTime desc
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		<if test="pageCond=='false'">
+			limit #{currentRecord},#{pageSize}
+		</if>
+	</select>
+</mapper>
+  
+  
+  
+  
+

@@ -22,7 +22,10 @@ import com.kkk.usercenter.outer.service.IOuterService;
 import com.kkk.usercenter.users.pojo.AAdmins;
 import com.kkk.usercenter.users.pojo.AAdminsEnum;
 import com.kkk.usercenter.users.service.IUserService;
-
+/**
+ * 后台管理员使用
+ * @author kkk
+ * */
 @Controller
 public class NoLoginController extends BaseController
 {
