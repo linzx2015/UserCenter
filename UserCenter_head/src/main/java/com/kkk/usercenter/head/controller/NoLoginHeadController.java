@@ -2,6 +2,7 @@ package com.kkk.usercenter.head.controller;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -220,6 +221,22 @@ public class NoLoginHeadController extends BaseController
 			JSONObject resultJSON=this.userService.insertOneAuserService(users);
 			//提示用户
 			this.info=resultJSON.getString("info");
+			//进行发邮件操作
+			if("0".equalsIgnoreCase(resultJSON.getString("code")))
+			{
+				//设置需要修改的文件
+				String fileName="template/emailVerify.html";
+				String subject="用户中心发的邮件";
+				Map<String,String> paramMap=new HashMap<String,String>();
+				paramMap.put("email", users.getEmail());
+				paramMap.put("subject", subject);
+				paramMap.put("verifyHref", "http://www.baidu.com");
+				paramMap.put("date", this.dateFormatUtil.format(new Date()));
+				String resultStr=this.fileUtil.replaceFile(fileName, paramMap);
+				//设置发送邮件的内容和参数
+				this.springEmailUtil.sendEmailHtml(users.getEmail(), subject, resultStr);
+				this.info+=",发送邮件成功,请到邮箱中去验证;<a href=''>重新发送</a>";
+			}
 		}else
 		{
 			this.info=ConstantFinalUtil.INFO_JSON.getString("7");

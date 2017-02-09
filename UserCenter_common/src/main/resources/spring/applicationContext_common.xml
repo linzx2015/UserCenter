@@ -26,7 +26,7 @@
     	<!-- 配置mybatis配置文件 -->
     	<property name="configLocation" value="classpath:mybatis.cfg.xml"/>
     	<!-- 配置mapper资源文件,可使用通配符 -->
-    	<property name="mapperLocations" value="classpath:config/sqlmapper/*/*Mapper.xml"/>
+    	<property name="mapperLocations" value="classpath*:config/sqlmapper/*/*Mapper.xml"/>
     </bean>
   
     <!-- 配置 Dao扫描--> 

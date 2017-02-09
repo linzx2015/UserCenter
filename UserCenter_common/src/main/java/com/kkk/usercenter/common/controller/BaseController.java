@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSONObject;
 import com.kkk.usercenter.common.util.DateFormatUtil;
+import com.kkk.usercenter.common.util.FileUtil;
 import com.kkk.usercenter.common.util.PageInfoUtil;
+import com.kkk.usercenter.common.util.SpringEmailUtil;
 import com.kkk.usercenter.common.util.VerifyCodeUtil;
 
 //在父controller中没有注解,在子controller中有注解即可
@@ -21,6 +23,10 @@ public class BaseController
 {
 	@Resource 
 	protected DateFormatUtil dateFormatUtil;
+	@Resource 
+	protected SpringEmailUtil springEmailUtil;
+	@Resource 
+	protected FileUtil fileUtil;
 	//展示提示信息
 	protected String info;
 	/**
