@@ -128,7 +128,7 @@
 									<div class="item">
 										<span class="label">确认密码：</span>
 										<div class="fl">
-											<input type="password" id="confirmPass" name="password"
+											<input type="password" id="confirmPass" name="confirmPass"
 												class="text" tabindex="2" />
 											<span id="confirmPassTip"></span>
 										</div>

@@ -66,17 +66,17 @@ public class NoLoginHeadController extends BaseController
 	@RequestMapping("/loginSubmit")
 	public String loginSubmit(HttpServletRequest request,HttpServletResponse response) throws IOException
 	{
-		ConstantFinalUtil.loggerMsg.info("---loginSubmit-----");
 		HttpSession session=request.getSession();
 		//从前台获取到参数
 		String email=request.getParameter("email");
 		String password=request.getParameter("password");
 		String randCode=request.getParameter("rand");
+		ConstantFinalUtil.loggerMsg.info("---loginSubmit---{}--",password);
 		
 		//从session中取出验证码
 		String rand=(String) session.getAttribute("rand");
 		//比较验证码和使用万能验证码
-		if(rand!=null && rand.equalsIgnoreCase(randCode) || "1234".equalsIgnoreCase(randCode))
+		if(rand!=null && rand.equalsIgnoreCase(randCode) || "0715".equalsIgnoreCase(randCode))
 		{
 			Map<String,Object> paramMap=this.getParamMap();
 			paramMap.put("email", email);
@@ -202,13 +202,16 @@ public class NoLoginHeadController extends BaseController
 		ConstantFinalUtil.loggerMsg.info("---registerSubmit---");
 		HttpSession session=request.getSession();
 		String randCode=request.getParameter("rand");
+		String password=request.getParameter("password");
 		
 		//取出session的rand
 		String rand=(String) session.getAttribute("rand");
 		if(rand!=null && rand.equalsIgnoreCase(randCode)|| "0715".equals(randCode))
 		{
 			//属性对象驱动已经自动完成赋值 密码和邮箱
+			//String encodePwd=EncryptUtil.encodeStr(users.getPassword());
 			users.setPassword(EncryptUtil.encodeStr(users.getPassword()));
+		//	ConstantFinalUtil.loggerMsg.info("-加密的字符串-{}--{}",encodePwd,users.getPassword());
 			users.setStatus(AUsersEnum.STATUS_ENABLE.getStatus());
 			users.setCreateTime(new Date());
 			users.setUpdateTime(new Date());
