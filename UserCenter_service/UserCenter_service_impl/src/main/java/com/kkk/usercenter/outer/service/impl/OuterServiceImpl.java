@@ -62,7 +62,7 @@ public class OuterServiceImpl implements IOuterService
 	public JSONObject regionList01Service(JSONObject reqJSON)
 	{
 		 JSONObject resultJSON=new JSONObject();
-		 JSONObject dataReqJSON=resultJSON.getJSONObject("data");
+		 JSONObject dataReqJSON=reqJSON.getJSONObject("data");
 		 String parentId=dataReqJSON.getString("parentId");
 		 Map<String,Object> paramMap=new HashMap<String,Object>();
 		 paramMap.put("parentId", parentId);

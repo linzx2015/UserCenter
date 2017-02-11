@@ -167,6 +167,7 @@
 												<div class="item">
 													<span class="label">地区:</span>
 													<div class="fl">
+														<!-- 树形菜单名称展示 -->
 														${requestScope.users.region.treeName }
 														<input type="button" value="修改地区" onclick="return $('#regionDiv').show()"/>
 													</div>
@@ -279,7 +280,7 @@
 				return ; 
 			}
 			$.post(
-				"${rootpath}/outer/regionList.html",
+				"${rootPath}/outer/regionList.html",
 				"json={'version':'1','data':{'parentId':'"+ parentId +"'}}",
 				function(data)
 				{

@@ -54,6 +54,7 @@ public class OuterController extends BaseController
 		{
 			if("1".equalsIgnoreCase(reqJSON.getString("version")))
 			{
+				//{"data":{"parentId":"0"},"version":"1"}
 				resultJSON=this.outerService.regionList01Service(reqJSON);
 			}else
 			{

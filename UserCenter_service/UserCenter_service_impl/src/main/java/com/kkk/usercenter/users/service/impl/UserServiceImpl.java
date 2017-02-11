@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.kkk.usercenter.common.util.ConstantFinalUtil;
 import com.kkk.usercenter.common.util.PageInfoUtil;
+import com.kkk.usercenter.system.service.ISystemService;
 import com.kkk.usercenter.users.dao.IARoleDao;
 import com.kkk.usercenter.users.dao.IAUsersDao;
 import com.kkk.usercenter.users.dao.IAUsersExtendDao;
@@ -30,6 +31,8 @@ public class UserServiceImpl implements IUserService
 	private IAUsersDao userDao;
 	@Resource
 	private IAUsersExtendDao userExtendDao;
+	@Resource
+	private ISystemService systemService;
 	
 	/*  管理员服务实现开始    */
 	/**
@@ -344,7 +347,13 @@ public class UserServiceImpl implements IUserService
 	@Override
 	public AUsers queryOneAusersService(Map<String, Object> paramMap)
 	{
-		return this.userDao.queryOne(paramMap);
+		AUsers user=this.userDao.queryOne(paramMap);
+		if("true".equalsIgnoreCase(paramMap.get("regionExtend")+""))
+		{
+			//查询关联的树形地区
+			this.systemService.queryTreeRegionService(user.getRegion());
+		}
+		return user;
 	}
 
 	@Override

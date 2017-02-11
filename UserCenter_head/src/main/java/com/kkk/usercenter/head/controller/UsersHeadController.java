@@ -53,6 +53,7 @@ public class UsersHeadController extends BaseController
 		//根据id查询用户
 		Map<String,Object> paramMap=this.getParamMap();
 		paramMap.put("id", users.getId());
+		paramMap.put("regionExtend","true");
 		users=this.userService.queryOneAusersService(paramMap);
 		request.setAttribute("users", users);
 		return "/head/users/usersUpdate";
