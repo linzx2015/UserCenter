@@ -17,7 +17,7 @@ public class DateFormatUtil
 	 * @param nowDate
 	 * @return String
 	 * */
-	public String format(Date nowDate)
+	public String formatDateTime(Date nowDate)
 	{
 		SimpleDateFormat sdf=new SimpleDateFormat(ConstantFinalUtil.BUNDLE.getString("format.datetime"));
 		return sdf.format(nowDate);

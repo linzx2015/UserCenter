@@ -30,7 +30,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
 		//提示非法登录
 		info=ConstantFinalUtil.INFO_JSON.getString("12");
 		session.setAttribute("info",info);
-		
 		//客户端跳转登录界面
 		response.sendRedirect(request.getContextPath()+"/login.html");
 		//返回false则不放行

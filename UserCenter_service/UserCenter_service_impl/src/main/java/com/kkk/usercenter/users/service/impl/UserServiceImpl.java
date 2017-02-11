@@ -1,5 +1,7 @@
 package com.kkk.usercenter.users.service.impl;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -252,13 +254,32 @@ public class UserServiceImpl implements IUserService
 	public JSONObject insertOneAuserService(AUsers user)
 	{
 		this.resultJson.clear();
+		//检查邮箱不能重复
+		Map<String,Object> paramMap=new HashMap<String,Object>();
+		paramMap.put("email", user.getEmail());
+		AUsers userRes=this.queryOneAusersService(paramMap);
+		if(userRes!=null)
+		{
+			resultJson.put("code","16");
+			resultJson.put("info", ConstantFinalUtil.INFO_JSON.getString("16"));
+			return resultJson;
+		}
+		//操作条数
 		int res=this.userDao.insertOne(user);
-//		String str=null;
-//		if(str.equals("aa"))
-//		{
-//		}
 		if(res>0)
 		{
+			//用户扩展表,如果为空,则new一个;否则直接使用
+			AUsersExtend usersExtend=user.getUsersExtend();
+			if(usersExtend==null)
+			{
+				usersExtend=new AUsersExtend();
+				usersExtend.setUsersId(user.getId());
+				//设置user关联用户扩展表
+				user.setUsersExtend(usersExtend);
+			}
+			usersExtend.setCreateTime(new Date());
+			usersExtend.setUpdateTime(new Date());
+			
 			this.resultJson.put("code", "0");
 			this.resultJson.put("info", ConstantFinalUtil.INFO_JSON.get("0"));
 			this.dataJson.clear();
@@ -282,6 +303,11 @@ public class UserServiceImpl implements IUserService
 		{
 			this.resultJson.put("code", "0");
 			this.resultJson.put("info", ConstantFinalUtil.INFO_JSON.get("0"));
+			//更新关联表,注意此处不能直接调用userdao执行操作
+			if(user.getUsersExtend()!=null)
+			{
+				this.updateOneAUsersExtendService(user.getUsersExtend());
+			}
 			this.dataJson.clear();
 			this.dataJson.put("id", user.getId());
 			this.dataJson.put("effectRows", res);

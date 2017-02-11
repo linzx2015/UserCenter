@@ -1,13 +1,15 @@
 package com.kkk.usercenter.users.pojo;
 
 import java.util.Date;
-
 import com.alibaba.fastjson.JSONObject;
+import com.kkk.usercenter.system.pojo.ARegion;
 
 public class AUsers
 {
 	//用户id
 	private int id;
+	//用户所在的地区码
+	private int regionId;
 	//用户邮箱
 	private String email;
 	//用户密码
@@ -37,8 +39,34 @@ public class AUsers
 	//上次登录时间
 	private Date lastLoginTime;
 	
+	//字符串描述
+	private String statusStr;
+	private String emailStatusStr;
+	private String phoneStatusStr;
+	
 	//关联用户扩展表
 	private AUsersExtend usersExtend;
+	private ARegion region;
+
+	public ARegion getRegion()
+	{
+		return region;
+	}
+
+	public void setRegion(ARegion region)
+	{
+		this.region = region;
+	}
+
+	public int getRegionId()
+	{
+		return regionId;
+	}
+
+	public void setRegionId(int regionId)
+	{
+		this.regionId = regionId;
+	}
 
 	public int getId()
 	{
@@ -203,5 +231,62 @@ public class AUsers
 	public JSONObject toJSON()
 	{
 		return null;
+	}
+	
+	public String getStatusStr()
+	{
+		AUsersEnum[] userEnums=AUsersEnum.values();
+		for(int i=0;i<userEnums.length;i++)
+		{
+			AUsersEnum userEnum=userEnums[i];
+			if(userEnum.toString().startsWith("STATUS_"))
+			{
+				if(userEnum.getStatus()==this.getStatus())
+				{
+					this.statusStr=userEnum.getInfo();
+					break;
+				}
+			}
+		}
+		return statusStr;
+	}
+	public String getEmailStatusStr()
+	{
+		AUsersEnum[] usersEnums = AUsersEnum.values();
+		for (int i = 0; i < usersEnums.length; i++)
+		{
+			AUsersEnum usersEnum = usersEnums[i];
+			if(usersEnum.toString().startsWith("EMAILSTATUS_"))
+			{
+				/* 如果循环的枚举==数据库存储的状态值,赋值枚举指定的字符串 */
+				if(usersEnum.getStatus() == this.emailStatus)
+				{
+					this.emailStatusStr = usersEnum.getInfo();
+					break ; 
+				}
+			}
+		}
+		return emailStatusStr;
+	}
+	public String getPhoneStatusStr()
+	{
+		/*
+		 * 邮箱状态:0:未验证;1:已验证;
+		 * */
+		AUsersEnum[] usersEnums = AUsersEnum.values();
+		for (int i = 0; i < usersEnums.length; i++)
+		{
+			AUsersEnum usersEnum = usersEnums[i];
+			if(usersEnum.toString().startsWith("PHONESTATUS"))
+			{
+				/* 如果循环的枚举==数据库存储的状态值,赋值枚举指定的字符串 */
+				if(usersEnum.getStatus() == this.phoneStatus)
+				{
+					this.phoneStatusStr = usersEnum.getInfo();
+					break ; 
+				}
+			}
+		}
+		return this.phoneStatusStr;
 	}
 }

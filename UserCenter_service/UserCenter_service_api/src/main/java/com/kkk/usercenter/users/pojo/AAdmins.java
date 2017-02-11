@@ -184,9 +184,9 @@ public class AAdmins
 		//开放的字段
 		resultJSON.put("id", this.getId());
 		resultJSON.put("email", this.getEmail());
-		resultJSON.put("createTime", dateFormatUtil.format(this.getCreateTime()));
-		resultJSON.put("updateTime", dateFormatUtil.format(this.getUpdateTime()));
-		resultJSON.put("lastLoginTime", dateFormatUtil.format(this.getLastLoginTime()));
+		resultJSON.put("createTime", dateFormatUtil.formatDateTime(this.getCreateTime()));
+		resultJSON.put("updateTime", dateFormatUtil.formatDateTime(this.getUpdateTime()));
+		resultJSON.put("lastLoginTime", dateFormatUtil.formatDateTime(this.getLastLoginTime()));
 		return resultJSON;
 	}
 	

@@ -21,7 +21,7 @@ public class AUsersExtend
 	//邮件发送时间
 	private Date emailSendTime;
 	//邮件发送验证码
-	private byte emailSendCode;
+	private String emailSendCode;
 	//手机验证码发送时间
 	private Date phoneSendTime;
 	//手机验证码
@@ -96,11 +96,11 @@ public class AUsersExtend
 	{
 		this.emailSendTime = emailSendTime;
 	}
-	public byte getEmailSendCode()
+	public String getEmailSendCode()
 	{
 		return emailSendCode;
 	}
-	public void setEmailSendCode(byte emailSendCode)
+	public void setEmailSendCode(String emailSendCode)
 	{
 		this.emailSendCode = emailSendCode;
 	}

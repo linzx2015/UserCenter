@@ -22,6 +22,10 @@ public class ConstantFinalUtil
 	public static final int CONNECT_TIMEOUT = 100000;
 	// 读取超时时间
 	public static final int READ_TIMEOUT = 100000;
+	// 分隔符 
+	public static final String SPLIT_STR = "|-->";
+	// 邮件验证超时时间
+	public static final long EMAIL_AUTH_TIMEOUT=1000*60*60*24;
 	// 获取properties属性文件信息,只需获取属性文件名称即可
 	public static ResourceBundle BUNDLE = ResourceBundle.getBundle("common");
 	// 存储所有的token数据,token为键,Admins对应的json为值

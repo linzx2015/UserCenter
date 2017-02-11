@@ -9,8 +9,12 @@ package com.kkk.usercenter.users.pojo;
 public enum AUsersEnum
 {
 	/* 枚举项 */
+	STATUS_DISABLE(Byte.valueOf("0"),"禁用"),
 	STATUS_ENABLE(Byte.valueOf("1"),"启用"),
-	STATUS_DISABLE(Byte.valueOf("0"),"禁用");
+	EMAILSTATUS_UNVERIFY(Byte.valueOf("0"),"未验证"),
+	EMAILSTATUS_VERIFYED(Byte.valueOf("1"),"验证通过"),
+	PHONESTATUS_UNVERIFY(Byte.valueOf("0"),"未验证"),
+	PHONESTATUS_VERIFYED(Byte.valueOf("1"),"验证通过");
 	
 	/* 状态值 */
 	private byte status ;

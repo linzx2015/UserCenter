@@ -43,10 +43,10 @@
 	<dl>
 		<dt>资料管理</dt>
 		<dd>
-			<a href="#">个人资料</a>
+			<a href="${rootPath}/head/users/usersUpdate.html?operType=updateInfo">个人资料</a>
 		</dd>
 		<dd>
-			<a href="#">收货信息</a>
+			<a href="${rootPath}/head/users/usersUpdate.html?operType=updatePass">修改密码</a>
 		</dd>
 		<dd>
 			<a href="#">登录密码</a>

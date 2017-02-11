@@ -160,7 +160,7 @@
 										<div class="item">
 											<span class="label">详细地址:</span>
 											<div class="fl">
-												${sessionScope.users.qq}
+												${sessionScope.users.address}
 											</div>
 										</div>
 										<!--item end-->

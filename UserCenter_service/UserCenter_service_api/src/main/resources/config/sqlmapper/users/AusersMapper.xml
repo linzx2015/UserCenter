@@ -3,18 +3,34 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kkk.usercenter.users.dao.IAUsersDao">
+	<!-- 自定义的resultMap -->
+	<resultMap type="com.kkk.usercenter.users.pojo.AUsers" id="userMap">
+		<id column="id" property="id"/>
+		<result column="regionId" property="regionId"/>
+		<association property="usersExtend" column="id" javaType="com.kkk.usercenter.users.pojo.AUsersExtend" select="queryOneUserExtend"/>
+		<association property="region" column="regionId" javaType="com.kkk.usercenter.system.pojo.ARegion" select="queryOneRegion"/>	
+	</resultMap>
+	<!-- 查询一个用户扩展表,注意usersId要跟user表中的id对应上,否则会查不到该数据,报空指针-->
+	<select id="queryOneUserExtend" resultType="com.kkk.usercenter.users.pojo.AUsersExtend">
+		select * from a_users_extend where usersId=#{id}
+	</select>
+	<!-- 查询一个地区 -->
+	<select id="queryOneRegion" resultType="com.kkk.usercenter.system.pojo.ARegion">
+		select * from a_region where id=#{regionId}
+	</select>
+	
 	<insert id="insertOne" parameterType="com.kkk.usercenter.users.pojo.AUsers" useGeneratedKeys="true" keyProperty="id">
 		insert into 
-		a_users(email,password,phone,qq,address,loginFailedCount,loginFailedTime,photoPath,emailStatus,
+		a_users(regionId,email,password,phone,qq,address,loginFailedCount,loginFailedTime,photoPath,emailStatus,
 			phoneStatus,status,createTime,updateTime,lastLoginTime)
-		values(#{email},#{password},#{phone},#{qq},#{address},#{loginFailedCount},#{loginFailedTime},
+		values(#{regionId},#{email},#{password},#{phone},#{qq},#{address},#{loginFailedCount},#{loginFailedTime},
 			#{photoPath},#{emailStatus},#{phoneStatus},#{status},#{createTime},#{updateTime},#{lastLoginTime});
 	</insert>
 	
 	<update id="updateOne" parameterType="com.kkk.usercenter.users.pojo.AUsers">
 		update a_users
 		<set>
-		  email=#{email},password=#{password},phone=#{phone},qq=#{qq},address=#{address},loginFailedCount=#{loginFailedCount},
+		  regionId=#{regionId},email=#{email},password=#{password},phone=#{phone},qq=#{qq},address=#{address},loginFailedCount=#{loginFailedCount},
 		  photoPath=#{photoPath},emailStatus=#{emailStatus},phoneStatus=#{phoneStatus},status=#{status},createTime=#{createTime},updateTime=#{updateTime},lastLoginTime=#{lastLoginTime}
 		</set>
 		<where>
@@ -36,16 +52,7 @@
 			</choose>
 		</where>
 	</delete>
-	<resultMap type="com.kkk.usercenter.users.pojo.AUsers" id="userExtendMap">
-		<id column="id" property="id"/>
-		<association property="usersExtend" column="id" javaType="com.kkk.usercenter.users.pojo.AUsersExtend" select="queryOneUserExtend"/>
-	</resultMap>
-	
-	<select id="queryOneUserExtend" resultType="com.kkk.usercenter.users.pojo.AUsersExtend">
-		select * from a_users_extend where usersId=#{id}
-	</select>
-	
-	<select id="queryOne" parameterType="map" resultMap="userExtendMap">
+	<select id="queryOne" parameterType="map" resultMap="userMap">
 		select * from a_users
 		<where>
 			<if test="id!=null">
@@ -56,7 +63,7 @@
 			</if>
 		</where>
 	</select>
-	<select id="queryMulti" parameterType="map" resultMap="userExtendMap">
+	<select id="queryMulti" parameterType="map" resultMap="userMap">
 		<choose>
 			<when test="pageCond=='true'">
 				select count(*) as id

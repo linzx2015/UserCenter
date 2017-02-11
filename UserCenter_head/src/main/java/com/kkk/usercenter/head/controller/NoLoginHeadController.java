@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,6 +22,7 @@ import com.kkk.usercenter.common.util.EncryptUtil;
 import com.kkk.usercenter.users.pojo.AAdminsEnum;
 import com.kkk.usercenter.users.pojo.AUsers;
 import com.kkk.usercenter.users.pojo.AUsersEnum;
+import com.kkk.usercenter.users.pojo.AUsersExtend;
 import com.kkk.usercenter.users.service.IUserService;
 
 /**
@@ -224,18 +226,7 @@ public class NoLoginHeadController extends BaseController
 			//进行发邮件操作
 			if("0".equalsIgnoreCase(resultJSON.getString("code")))
 			{
-				//设置需要修改的文件
-				String fileName="template/emailVerify.html";
-				String subject="用户中心发的邮件";
-				Map<String,String> paramMap=new HashMap<String,String>();
-				paramMap.put("email", users.getEmail());
-				paramMap.put("subject", subject);
-				paramMap.put("verifyHref", "http://www.baidu.com");
-				paramMap.put("date", this.dateFormatUtil.format(new Date()));
-				String resultStr=this.fileUtil.replaceFile(fileName, paramMap);
-				//设置发送邮件的内容和参数
-				this.springEmailUtil.sendEmailHtml(users.getEmail(), subject, resultStr);
-				this.info+=",发送邮件成功,请到邮箱中去验证;<a href=''>重新发送</a>";
+				this.reSend(request,users.getEmail());
 			}
 		}else
 		{
@@ -244,4 +235,103 @@ public class NoLoginHeadController extends BaseController
 		request.setAttribute("info", info);
 		return this.register();
 	}
+	
+	/**
+	 * 邮件重新发送操作
+	 * @param email
+	 * */
+	@RequestMapping("/reSend")
+	public String reSend(HttpServletRequest request,String email)
+	{
+		//根据邮箱查询用户
+		Map<String,Object> paramMap=this.getParamMap();
+		paramMap.put("email", email);
+		AUsers user=this.userService.queryOneAusersService(paramMap);
+		/**
+		 * 生成链接:http://127.0.0.1:10000/UserCenter_head/verifyEmail.htm?
+		 * 	email=11@11.com&code=sha256(email+时间+uuid)
+		 * */
+		Date sendEmailTime =new Date();
+		//sha256(11@11.com+2017-02-09 11:11:11+uuid)
+		String codeUid=UUID.randomUUID().toString();
+		//拼装成待加密的字符串
+		String code=user.getEmail()+this.dateFormatUtil.formatDateTime(sendEmailTime)+codeUid;
+		String verifyHref=ConstantFinalUtil.BUNDLE.getString("website.urlRootPath")+"/verifyEmail.html?email="+email+
+				"&code="+DigestUtils.sha256Hex(code);
+		//存储扩展表的数据
+		AUsersExtend usersExtend=new AUsersExtend();
+		usersExtend.setEmailSendTime(sendEmailTime);
+		usersExtend.setEmailSendCode(codeUid);
+		usersExtend.setUpdateTime(new Date());
+		//更新用户扩展表的数据
+		this.userService.updateOneAuserService(user);
+		
+		//发送邮件需要的信息
+		String fileName="template/emailVerify.html";
+		String subject="用户中心发送的邮件";
+		Map<String,String> condMap=new HashMap<String,String>();
+		//用户的email
+		condMap.put("email", user.getEmail());
+		condMap.put("subject",subject);
+		condMap.put("verifyHref", verifyHref);
+		condMap.put("date",this.dateFormatUtil.formatDate(new Date()));
+		String resultStr=this.fileUtil.replaceFile(fileName, condMap);
+		this.springEmailUtil.sendEmailHtml(user.getEmail(), subject, resultStr);
+		this.info+=",邮件已经发送成功,请到邮箱中验证;<a href='"+request.getContextPath()+"/reSend.html?email="+user.getEmail()+"'>重新发送</a>";
+		return this.register();
+	}
+	/**
+	 * 验证邮件的链接
+	 * @param request
+	 * @param email
+	 * @return String
+	 */
+	@RequestMapping("/verifyEmail")
+	public String verifyEmail(HttpServletRequest request,String email)
+	{
+		Map<String,Object> paramMap=this.getParamMap();
+		paramMap.put("email", email);
+		AUsers users=this.userService.queryOneAusersService(paramMap);
+		if(users==null)
+		{
+			this.info="邮箱帐号不存在";
+		}else
+		{
+			AUsersExtend usersExtend=users.getUsersExtend();
+			//检查邮件过期时间
+			long timeDiff=new Date().getTime()-usersExtend.getEmailSendTime().getTime();
+			if(timeDiff>ConstantFinalUtil.EMAIL_AUTH_TIMEOUT)
+			{
+				this.info=ConstantFinalUtil.INFO_JSON.getString("13");
+				request.setAttribute("info", this.info);
+				return "/head/info";
+			}
+			//验证链接的合法性;sha256(11@11.com+2017-02-09 11:11:11+uuid)
+			String validCodeUid=usersExtend.getEmailSendCode();
+			String validCode=users.getEmail()+this.dateFormatUtil.formatDateTime(usersExtend.getEmailSendTime())+validCodeUid;
+			validCode=DigestUtils.sha256Hex(validCode);
+			
+			String reqCodeStr=request.getParameter("code");
+			if(!validCode.equalsIgnoreCase(reqCodeStr))
+			{
+				this.info=ConstantFinalUtil.INFO_JSON.getString("14");
+				request.setAttribute("info", this.info);
+			}
+			
+			//邮箱还未验证,需要进行验证
+			if(users.getEmailStatus()!=AUsersEnum.EMAILSTATUS_VERIFYED.getStatus())
+			{
+				users.setEmailStatus(AUsersEnum.EMAILSTATUS_VERIFYED.getStatus());
+				JSONObject resultJSON=this.userService.updateOneAuserService(users);
+				this.info=resultJSON.getString("info");
+			}else
+			{
+				//已经验证过,无需再次验证
+				this.info=ConstantFinalUtil.INFO_JSON.getString("15");
+			}
+		}
+		request.setAttribute("info", this.info);
+		return "/head/info";
+	}
+	
 }

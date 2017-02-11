@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.kkk.usercenter.system.dao.IARegionDAO">
+	<insert id="insertOne" parameterType="com.kkk.usercenter.system.pojo.ARegion" useGeneratedKeys="true" keyProperty="id">
+		insert into a_region 
+		(parentId , name , pinyin , areacode , content ,leafStatus ,status ,createTime, updateTime, pubTime )
+		values 
+		(#{parentId} ,#{name} ,#{pinyin} ,#{areacode} , #{content} ,#{leafStatus} , #{status} , #{createTime}, #{updateTime}, #{pubTime})
+	</insert>
+	<update id="updateOne" parameterType="com.kkk.usercenter.system.pojo.ARegion">
+		update a_region
+		<set>
+			<if test="parentId!=null">parentId=#{parentId},</if>
+			<if test="name!=null">name=#{name},</if>
+			<if test="pinyin!=null">pinyin=#{pinyin},</if>
+			<if test="areacode!=null">areacode=#{areacode},</if>
+			<if test="content!=null">content=#{content},</if>
+			<if test="leafStatus!=null">leafStatus=#{leafStatus},</if>
+			<if test="createTime!=null">createTime=#{createTime},</if>
+			<if test="updateTime!=null">updateTime=#{updateTime}</if>
+			<if test="pubTime!=null">pubTime=#{pubTime}</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteOne" parameterType="com.kkk.usercenter.system.pojo.ARegion">
+		delete from a_region 
+		<where>
+			<if test="id!=null">
+				id=#{id}
+			</if>
+		</where>
+	</delete>
+	
+	<resultMap type="com.kkk.usercenter.system.pojo.ARegion" id="regionMap">
+		<id column="id" property="id"/>
+		<result property="parentId" column="parentId"/>
+		<result property="name" column="name"/>
+		<result property="pinyin" column="pinyin"/>
+		<result property="areacode" column="areacode"/>
+		<result property="content" column="content"/>
+		<result property="status" column="status"/>
+		<result property="leafStatus" column="leafStatus"/>
+		<result property="status" column="status"/>
+		<result property="createTime" column="createTime"/>
+		<result property="updateTime" column="updateTime"/>
+		<result property="pubTime" column="pubTime"/>
+		
+		<!-- 使用autoMapping,就使用result让column和property一一对应 -->
+		<association property="parentRegion" column="parentId" 
+			javaType="com.kkk.usercenter.system.pojo.ARegion" select="queryParentTree" autoMapping="true"/>
+	</resultMap>
+	
+	<select id="queryParentTree" resultMap="regionMap">
+		select * from a_region 
+		<where>
+			 id=#{parentId}
+		</where>
+		order by id desc
+	</select>
+	
+	<select id="queryOne" resultMap="regionMap">
+		select * from a_region
+		<where>
+			<if test="id!=null">
+				id=#{id}
+			</if>		
+			<if test="parentId!=null">
+				parentId=#{parentId}
+			</if>
+			<if test="areacode!=null">
+				areacode=#{areacode}
+			</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<select id="queryMulti" parameterType="map" resultMap="regionMap">
+		<choose>
+			<when test="pageCond == 'true'">
+				select count(*) as id from a_region
+			</when>
+			<otherwise>
+				<!-- 查询记录 -->
+				select * from a_region 
+			</otherwise>
+		</choose>
+		
+		<where>
+			<if test="keywords != null and keywords != '' ">
+				(name like #{keywords} or pinyin like #{keywords} or content like #{keywords}) 
+			</if>
+			<if test="parentId != null and parentId != ''">
+				and parentId = #{parentId}
+			</if>
+			<if test="status != null and status != ''">
+				and status = #{status}
+			</if>
+			<if test="stDate != null and edDate != null">
+				<![CDATA[
+					and pubTime >= #{stDate} and pubTime < #{edDate}
+				]]>
+			</if>
+		</where>
+		
+		<choose>
+			<when test="araeCodeAsc">
+				order by areaCode asc
+			</when>
+			<otherwise>
+				order by pubtime asc 
+			</otherwise>
+		</choose>
+		
+		<!-- 分页 -->
+		<if test="currentRecord != null and pageSize != null">
+			limit #{currentRecord},#{pageSize}
+		</if>
+	</select>
+</mapper>

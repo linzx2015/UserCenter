@@ -6,16 +6,16 @@
 	<insert id="insertOne" parameterType="com.kkk.usercenter.users.pojo.AUsersExtend" useGeneratedKeys="true" keyProperty="id">
 		insert into 
 		a_users_extend(usersId,idCardType,idCardNum,idCardHead,idCardBack,idCardHand,emailSendTime,emailSendCode,phoneSendTime,
-			phoneSendCode,createTime,updateTime,lastLoginTime)
+			phoneSendCode,createTime,updateTime)
 		values(#{usersId},#{idCardType},#{idCardNum},#{idCardHead},#{idCardBack},#{idCardHand},#{emailSendTime},
-			#{emailSendCode},#{phoneSendTime},#{phoneSendCode},#{createTime},#{updateTime},#{lastLoginTime});
+			#{emailSendCode},#{phoneSendTime},#{phoneSendCode},#{createTime},#{updateTime});
 	</insert>
 	
 	<update id="updateOne" parameterType="com.kkk.usercenter.users.pojo.AUsersExtend">
 		update a_users_extend
 		<set>
 		  usersId=#{usersId},idCardType=#{idCardType},idCardNum=#{idCardNum},idCardHead=#{idCardHead},idCardBack=#{idCardBack},idCardHand=#{idCardHand},
-		  emailSendTime=#{emailSendTime},emailSendCode=#{emailSendCode},phoneSendTime=#{phoneSendTime},phoneSendCode=#{phoneSendCode},createTime=#{createTime},updateTime=#{updateTime},lastLoginTime=#{lastLoginTime}
+		  emailSendTime=#{emailSendTime},emailSendCode=#{emailSendCode},phoneSendTime=#{phoneSendTime},phoneSendCode=#{phoneSendCode},createTime=#{createTime},updateTime=#{updateTime}
 		</set>
 		<where>
 			<choose>
@@ -65,7 +65,7 @@
 						order by createTime desc
 					</when>
 					<otherwise>
-						order by lastLoginTime desc
+						order by updateTime desc
 					</otherwise>
 				</choose>
 			</otherwise>

@@ -18,4 +18,10 @@ public interface IOuterService
 	 * } 
 	 * */
 	JSONObject validator01AdminService(JSONObject reqJSON);
+	/**
+	 * 查看地区列表
+	 * @param reqJSON
+	 * @return
+	 */
+	JSONObject regionList01Service(JSONObject reqJSON);
 }
