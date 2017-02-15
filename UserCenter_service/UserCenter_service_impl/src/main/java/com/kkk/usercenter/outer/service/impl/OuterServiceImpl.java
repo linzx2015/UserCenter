@@ -58,6 +58,38 @@ public class OuterServiceImpl implements IOuterService
 		}
 		return resultJSON;
 	}
+	
+	/**
+	 * 拼装成下行的json字符串
+	 * */
+	@Override
+	public JSONObject validator01UserService(JSONObject reqJSON)
+	{
+		JSONObject dataReqJSON=reqJSON.getJSONObject("data");
+		JSONObject resultJSON=new JSONObject();
+		//下行的data json
+		JSONObject dataRespJSON=new JSONObject();
+		//+""可避免空指针异常
+		String token=dataReqJSON.getString("token")+"";
+		//从token容器中获取admin的json数据
+		JSONObject userJSON=ConstantFinalUtil.TOKENS_MAP.get(token);
+		if(userJSON!=null)
+		{
+			//拼装响应结果的json串
+			dataRespJSON.put("users", userJSON);
+			resultJSON.put("data", dataRespJSON);
+			
+			resultJSON.put("version", reqJSON.getString("version"));
+			resultJSON.put("code", "0");
+			resultJSON.put("info",ConstantFinalUtil.INFO_JSON.get("0"));
+		}else
+		{
+			resultJSON.put("code", "10");
+			resultJSON.put("info", ConstantFinalUtil.INFO_JSON.get("10"));
+		}
+		return resultJSON;
+	}
+	
 	@Override
 	public JSONObject regionList01Service(JSONObject reqJSON)
 	{
@@ -83,4 +115,5 @@ public class OuterServiceImpl implements IOuterService
 		 resultJSON.put("data", dataResJSON);
 		return resultJSON;
 	}
+	
 }

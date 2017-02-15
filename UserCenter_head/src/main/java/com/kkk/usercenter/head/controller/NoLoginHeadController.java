@@ -14,11 +14,14 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kkk.usercenter.common.controller.BaseController;
 import com.kkk.usercenter.common.util.ConstantFinalUtil;
 import com.kkk.usercenter.common.util.EncryptUtil;
+import com.kkk.usercenter.outer.service.IOuterService;
 import com.kkk.usercenter.users.pojo.AAdminsEnum;
 import com.kkk.usercenter.users.pojo.AUsers;
 import com.kkk.usercenter.users.pojo.AUsersEnum;
@@ -34,6 +37,8 @@ public class NoLoginHeadController extends BaseController
 {
 	@Resource
 	private IUserService userService;
+	@Resource
+	private IOuterService outerService;
 	/**
 	 * 前台登录的检查方法
 	 * @param request,response 
@@ -133,6 +138,45 @@ public class NoLoginHeadController extends BaseController
 		}
 		request.setAttribute("info", this.info);
 		return this.login(request, response);
+	}
+	
+	/**
+	 * 对token进行验证是否有效 { "version":"1", "data":{ token:"" } }
+	 * 
+	 * @return userJSON
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/validateUser", produces = "text/html;charset=utf-8")
+	public String validateUser(HttpServletRequest request)
+	{
+		JSONObject resultJSON = new JSONObject();
+		String jsonStr = request.getParameter("json");
+		if (jsonStr == null)
+		{
+			jsonStr = "";
+		}
+
+		try
+		{
+			// 转成JSONObject
+			JSONObject reqJSON = (JSONObject) JSON.parse(jsonStr);
+			// 根据版本号进行验证,如果有额外的版本号再另外增加,为多版本兼容多准备
+			if ("1".equalsIgnoreCase(reqJSON.getString("version")))
+			{
+				resultJSON = this.outerService.validator01UserService(reqJSON);
+			} else
+			{
+				resultJSON.put("version", reqJSON.getString("version"));
+				resultJSON.put("code", 9);
+				resultJSON.put("info", ConstantFinalUtil.INFO_JSON.getString("9"));
+			}
+		} catch (Exception e)
+		{
+			resultJSON.put("code", "11");
+			resultJSON.put("info", ConstantFinalUtil.INFO_JSON.getString("11"));
+		}
+
+		return resultJSON + "";
 	}
 	
 	/**
