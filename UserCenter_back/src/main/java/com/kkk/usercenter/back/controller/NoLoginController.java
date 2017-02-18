@@ -185,7 +185,7 @@ public class NoLoginController extends BaseController
 			/*生成uuid*/
 			String token = UUID.randomUUID() + "" ; 
 			
-			/* 存储到Token的容器中,值为管理员对应的JSON信息 */
+			// 存储到Token的容器中,值为管理员对应的JSON信息 
 			/*JSONObject adminsJSON = new JSONObject();
 			 存储管理员对象可开放的字段 
 			adminsJSON.put("id", admins.getId());
@@ -195,8 +195,10 @@ public class NoLoginController extends BaseController
 			adminsJSON.put("lastLoginTime", this.dateFormatUtil.format(admins.getLastLoginTime()));
 			ConstatFinalUtil.TOKENS_MAP.put(token, adminsJSON);*/
 			
-			/* 调用POJO对应的json存储 */
+			// 调用POJO对应的json存储 
 			ConstantFinalUtil.TOKENS_MAP.put(token, admin.toJSON());
+			//将token项redis中也存一份
+			this.redisUtil.put(token,admin.toJSON().toJSONString(),60*2);
 			
 			/*加上token*/
 			String tokenIndex = "token=" ;
@@ -253,7 +255,11 @@ public class NoLoginController extends BaseController
 			if ("1".equalsIgnoreCase(reqJSON.getString("version")))
 			{
 				resultJSON = this.outerService.validator01AdminService(reqJSON);
-			} else
+			}else if("2".equalsIgnoreCase(reqJSON.getString("version")))
+			{
+				//第二个版本存在redis中
+				resultJSON=this.outerService.validator02AdminService(reqJSON);
+			}else
 			{
 				resultJSON.put("version", reqJSON.getString("version"));
 				resultJSON.put("code", 9);

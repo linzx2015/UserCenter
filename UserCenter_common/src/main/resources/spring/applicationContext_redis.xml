@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd"
+        default-autowire="byName">
+	<!-- 配置jedis -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<!-- 最大连接数 -->
+		<!-- <property name="maxActive" value="5000"/> -->
+		<!-- 最大空闲数 -->
+		<property name="maxIdle" value="1000"/>
+		<!-- 最大建立连接等待时间 -->
+		<!-- <property name="maxWait" value="30000"/> -->
+		<!-- 指明是否从连接池中取出连接前进行检验;如果检验失败,则从池中取出该连接并尝试取出另一个 -->
+		<property name="testOnBorrow" value="true"/>
+	</bean>
+
+	<!-- 连接redis服务器的信息 -->
+	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<!-- 客户端超时时间单位是毫秒 -->
+		<property name="timeout" value="600000"/>
+		<property name="usePool" value="true"/>
+		<property name="hostName" value="192.168.56.101"/>
+		<property name="password" value="123456"/>
+		<!-- 关联jedis配置-->
+		<property name="poolConfig" ref="jedisPoolConfig"/>
+	</bean>	
+	
+	<!-- 配置Spring连接redis的工具类 -->	
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<!-- connectionFactory是在RedisAccessor中要求的 -->
+		<property name="connectionFactory" ref="jedisConnectionFactory"/>
+	</bean>
+	<!-- 配置redis结束 -->
+ </beans>

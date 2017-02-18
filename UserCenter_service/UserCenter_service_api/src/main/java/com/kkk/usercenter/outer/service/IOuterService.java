@@ -18,6 +18,14 @@ public interface IOuterService
 	 * } 
 	 * */
 	JSONObject validator01AdminService(JSONObject reqJSON);
+	
+	/**
+	 * 第二个版本从redis中去token
+	 * @param reqJSON
+	 * @return JSONObject
+	 * */
+	JSONObject validator02AdminService(JSONObject reqJSON);
+	
 	/**
 	 * 验证token是否有效,第一个版本
 	 * @param reqJSON 上行的json字符串
@@ -32,6 +40,7 @@ public interface IOuterService
 	 * } 
 	 * */
 	JSONObject validator01UserService(JSONObject reqJSON);
+	
 	/**
 	 * 查看地区列表
 	 * @param reqJSON

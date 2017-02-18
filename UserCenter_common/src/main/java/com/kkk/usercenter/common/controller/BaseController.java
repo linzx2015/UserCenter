@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.kkk.usercenter.common.util.DateFormatUtil;
 import com.kkk.usercenter.common.util.FileUtil;
 import com.kkk.usercenter.common.util.PageInfoUtil;
+import com.kkk.usercenter.common.util.RedisUtil;
 import com.kkk.usercenter.common.util.SpringEmailUtil;
 import com.kkk.usercenter.common.util.VerifyCodeUtil;
 
@@ -27,6 +28,8 @@ public class BaseController
 	protected SpringEmailUtil springEmailUtil;
 	@Resource 
 	protected FileUtil fileUtil;
+	@Resource
+	protected RedisUtil redisUtil;
 	//展示提示信息
 	protected String info;
 	/**
